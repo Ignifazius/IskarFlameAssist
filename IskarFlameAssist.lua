@@ -103,7 +103,7 @@ local flameAllButton = CreateFrame("Button", "Buff", statusBarFrame)
 	end)
 	
 	
-	
+--[[	
 local debugButton = CreateFrame("Button", "Buff", statusBarFrame)
 	debugButton:SetPoint("TOPLEFT", statusBarFrame, 0, 40)
 	debugButton:SetWidth(100)
@@ -124,7 +124,7 @@ local debugButton = CreateFrame("Button", "Buff", statusBarFrame)
 		elseif button == "RightButton" then
 		end
 	end)
-	
+]]--	
 	
 	
 function findBuff(target)
@@ -167,11 +167,11 @@ function scanRaidForBuff()
 end
 
 function addToList(count, time, name)
-	print("adding "..name.." to list");
+	--print("adding "..name.." to list");
 	if name ~= "NOBODY" then
 		local str = name.. " - "..time;
 		flameTable[count] = str;
-		print("tablesize: "..table.getn(flameTable))
+		--print("tablesize: "..table.getn(flameTable))
 	end
 end
 
