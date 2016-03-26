@@ -3,10 +3,10 @@
 local carrierName = "NOBODY"
 local lastCarrier = "XX";
 local scanEnabled = false;
-local holdingSince = 0;
+local holdingSince = 0.0;
 local flameTable = {};
-local hiscoreTable;
-local lastCarrierTime = 0;
+local hiscoreTable = {};
+local lastCarrierTime = 0.0;
 local tableindex = 1;
 
 
@@ -19,7 +19,7 @@ local sBTexture = sBFrame:CreateTexture(nil,"BACKGROUND")
 	sBTexture:SetAllPoints(sBFrame)
 	sBFrame.texture = sBTexture
 	sBFrame:SetPoint("RIGHT", -150, 170)
-	sBFrame:Show()
+	sBFrame:Hide()
 
 	sBFrame:SetMovable(true)
 	sBFrame:EnableMouse(true)
@@ -141,14 +141,14 @@ function findBuff(target)
 	end
 end
 
-function round(number, decimals)
+function roundIFA(number, decimals)
     return (("%%.%df"):format(decimals)):format(number)
 end
 
-function countTime()
+function countTimeIFA()
 	local seconds = GetTime();
 	local diff = seconds - holdingSince;
-	return round(diff, 2);
+	return roundIFA(diff, 2);
 end
 
 function scanRaidForBuff() 
@@ -176,7 +176,7 @@ function addToList(count, time, name)
 end
 
 function flameActual() 
-	local message = carrierName.." is holding the Eye for "..countTime().." seconds.";
+	local message = carrierName.." is holding the Eye for "..countTimeIFA().." seconds.";
 	--TODO detect lfr? -.-
 	SendChatMessage(message, "RAID");
 end
@@ -201,23 +201,40 @@ updater:SetScript("OnUpdate", function(self)
 		scanRaidForBuff()
 		if (lastCarrier == carrierName) then
 			--keep time / do nothing
-			lastCarrierTime = countTime();
+			lastCarrierTime = countTimeIFA();
 		else
-			addToList(tableindex, lastCarrierTime, lastCarrier);
-			tableindex = tableindex+1;
+			if (lastCarrier ~= "NOBODY") then
+				addToList(tableindex, lastCarrierTime, lastCarrier);
+				tableindex = tableindex+1;
+			end
 			lastCarrier = carrierName;
 			holdingSince = GetTime();
 		end
-		if (tonumber(countTime()) < 1 and carrierName == "NOBODY") then
+		if (tonumber(countTimeIFA()) < 1 and carrierName == "NOBODY") then
 			sbtext:SetText("");
 		else
-			sbtext:SetText(carrierName.." "..countTime());
+			sbtext:SetText(carrierName.." "..countTimeIFA());
 		end
 		sBFrame.text = sbtext;
 	end
 end)
 
 
+function deriveTopList()
+	local tmpTable = flameTable;
+	--TODO--
+	-- get all entries with player name
+	
+	-- get seconds (via regex) of all this entries
+	-- add seconds
+	-- add to list
+	-- repeat for everyone
+	-- sort list
+end
+
+
+
+------------------------- slashcommands
 
 SLASH_ISKARFLAMEASSIST1 = '/ifa';
 
